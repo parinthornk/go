@@ -8,10 +8,14 @@ import (
 	"strings"
 	"time"
 
+	"net/http"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"github.com/gin-gonic/gin"
 )
 
 func ToString(x any) (y string) {
@@ -181,7 +185,16 @@ type Pipeline struct {
 // ==================================================================================================== //
 
 func main() {
-	fmt.Println(MhList[Interface]())
+
+	r := gin.New()
+	r.GET("/members", func(c *gin.Context) {
+
+		var ls_members = MhList[Member]()
+
+		c.JSON(http.StatusOK, ls_members)
+	})
+	r.Run()
+	//fmt.Println(MhList[Interface]())
 }
 
 // ==================================================================================================== //
