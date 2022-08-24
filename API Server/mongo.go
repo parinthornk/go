@@ -97,8 +97,8 @@ var POSITION_SENIOR2 = "SENIOR2"
 var POSITION_MANAGER = "MANAGER"
 
 var STATUS_PURPOSED = "PURPOSED"
-var STATUS_DESIGN = "DESIGN"
-var STATUS_DEV = "DEV"
+var STATUS_DESIGN = "IN_DESIGN"
+var STATUS_DEV = "IN_DEV"
 var STATUS_TESTING = "TESTING"
 var STATUS_GOLIVE = "GOLIVE"
 
@@ -150,18 +150,18 @@ type Subscription struct {
 	Authentication Authentication     `bson:"authentication"`
 }
 
-type ESubscription struct {
-	SubscriptionDEV []Subscription `bson:"subscriptionDEV"`
-	SubscriptionSIT []Subscription `bson:"subscriptionSIT"`
-	SubscriptionUAT []Subscription `bson:"subscriptionUAT"`
-	SubscriptionPRD []Subscription `bson:"subscriptionPRD"`
+type EConsume struct {
+	DEV []Subscription `bson:"DEV"`
+	SIT []Subscription `bson:"SIT"`
+	UAT []Subscription `bson:"UAT"`
+	PRD []Subscription `bson:"PRD"`
 }
 
-type EServiceProvider struct {
-	ProviderDEV ServiceProvider `bson:"providerDEV"`
-	ProviderSIT ServiceProvider `bson:"providerSIT"`
-	ProviderUAT ServiceProvider `bson:"providerUAT"`
-	ProviderPRD ServiceProvider `bson:"providerPRD"`
+type EExpose struct {
+	DEV ServiceProvider `bson:"DEV"`
+	SIT ServiceProvider `bson:"SIT"`
+	UAT ServiceProvider `bson:"UAT"`
+	PRD ServiceProvider `bson:"PRD"`
 }
 
 type Interface struct {
@@ -170,8 +170,8 @@ type Interface struct {
 	Description string             `bson:"description"`
 	Status      string             `bson:"status"`
 	PIC         Member             `bson:"pic"`
-	Backends    ESubscription      `bson:"backends"`
-	Exposed     EServiceProvider   `bson:"exposed"`
+	Backends    EConsume           `bson:"backends"`
+	Exposed     EExpose            `bson:"exposed"`
 }
 
 type Pipeline struct {
@@ -189,9 +189,11 @@ func main() {
 	r := gin.New()
 	r.GET("/members", func(c *gin.Context) {
 
-		var ls_members = MhList[Member]()
+		c.JSON(http.StatusOK, MhList[Member]())
+	})
+	r.GET("/interfaces", func(c *gin.Context) {
 
-		c.JSON(http.StatusOK, ls_members)
+		c.JSON(http.StatusOK, MhList[Interface]())
 	})
 	r.Run()
 	//fmt.Println(MhList[Interface]())
